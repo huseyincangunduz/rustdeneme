@@ -8,23 +8,25 @@ use participant::*;
 use uuid::Uuid;
 
 fn main() {
+    // TESTO: TCP Ping Pong
+
     // TESTO: How to create a list
-    let mut p_list: Vec<participant::Participant> = Vec::new();
-    p_list.push(participant::Participant {
-        client_id: Uuid::new_v4(),
-        instance_name: String::from("Tetakent UBS Users"),
-        subject_name: String::from("User Created"),
-        subject_type: SubjectType::EVENT,
-    });
-    p_list.push(participant::Participant {
-        client_id: Uuid::new_v4(),
-        instance_name: String::from("Tetakent UBS Users"),
-        subject_name: String::from("GetUser"),
-        subject_type: SubjectType::REQUEST,
-    });
-    for ele in p_list {
-        println!("ENGINE5: \"{}\" {} from \"{}\" has been registered, {}", ele.subject_name, ele.subject_type , ele.instance_name, ele.client_id)
-    }
+    // let mut p_list: Vec<participant::Participant> = Vec::new();
+    // p_list.push(participant::Participant {
+    //     client_id: Uuid::new_v4(),
+    //     instance_name: String::from("Tetakent UBS Users"),
+    //     subject_name: String::from("User Created"),
+    //     subject_type: SubjectType::EVENT,
+    // });
+    // p_list.push(participant::Participant {
+    //     client_id: Uuid::new_v4(),
+    //     instance_name: String::from("Tetakent UBS Users"),
+    //     subject_name: String::from("GetUser"),
+    //     subject_type: SubjectType::REQUEST,
+    // });
+    // for ele in p_list {
+    //     println!("ENGINE5: \"{}\" {} from \"{}\" has been registered, {}", ele.subject_name, ele.subject_type , ele.instance_name, ele.client_id)
+    // }
 
     // TESTO: How to construct a struct instance?
     
