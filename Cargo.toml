@@ -3,9 +3,16 @@ name = "rusttesto2"
 version = "0.1.0"
 edition = "2024"
 
+[dependencies]
+rxr = "0.1.11"
+
 # [dependencies]
 [dependencies.uuid]
 version = "1.16.0"
 features = [
     "v4",
 ]
+
+[dependencies.tokio] 
+version = "1"
+features = ["full"]
