@@ -9,12 +9,33 @@ use std::error::Error;
 
 use std::f32::consts::E;
 use std::io::{self, Read, Write};
+use std::sync::{Arc, Mutex};
 
 use participant::*;
 use uuid::Uuid;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    // let mut p_list: Vec<participant::Participant> = Vec::new();
+    // p_list.push(participant::Participant {
+    //     client_id: Uuid::new_v4(),
+    //     instance_name: instanceName,
+    //     subject_name: subjectName,
+    //     subject_type: SubjectType::EVENT,
+    // });
+    // p_list.push(participant::Participant {
+    //     client_id: Uuid::new_v4(),
+    //     instance_name: String::from("Tetakent UBS Users"),
+    //     subject_name: String::from("GetUser"),
+    //     subject_type: SubjectType::REQUEST,
+    // });
+    // for ele in p_list {
+    //     println!(
+    //         "ENGINE5: \"{}\" {} from \"{}\" has been registered, {}",
+    //         ele.subject_name, ele.subject_type, ele.instance_name, ele.client_id
+    //     )
+    // }
+
     // Allow passing an address to listen on as the first argument of this
     // program, but otherwise we'll just set up our TCP listener on
     // 127.0.0.1:8080 for connections.
@@ -25,9 +46,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     // above and must be associated with an event loop.
     let listener = TcpListener::bind(&addr).await?;
     println!("Listening on: {}", addr);
+    let mut shared: Arc<Mutex<Vec<participant::Participant>>> = Arc::new(Mutex::new(Vec::new()));
     loop {
-        let mut midone : Participant;
-
         // Asynchronously wait for an inbound socket.
         let (mut socket, _) = listener.accept().await?;
 
@@ -40,15 +60,26 @@ async fn main() -> Result<(), Box<dyn Error>> {
         // which will allow all of our clients to be processed concurrently.
 
         tokio::spawn(async move {
+            let a = & String::from("User Created");
+
+            shared.get_mut().unwrap().push(
+                participant::Participant {
+                    client_id: Uuid::new_v4(),
+                    instance_name: & String::from("Tetakent UBS Users"),
+                    subject_name: a,
+                    subject_type: SubjectType::EVENT,
+                }
+            );
+            // let mut midone: Participant;
             let mut buf = vec![0; 1024];
             // midone = String::from("Midone sinane nanana");
-            midone = participant::Participant {
-                client_id: Uuid::new_v4(),
-                instance_name: String::from("Instance"),
-                subject_name: String::from("Subject name"),
-                subject_type: SubjectType::EVENT
-            };
-            print!("Spawn içinde: {}", midone.subject_name);
+            // midone = participant::Participant {
+            //     client_id: Uuid::new_v4(),
+            //     instance_name: &String::from("Instance"),
+            //     subject_name: &String::from("Subject name"),
+            //     subject_type: SubjectType::EVENT,
+            // };
+            // print!("Spawn içinde: {}", midone.subject_name);
 
             // In a loop, read data from the socket and write the data back.
             loop {
@@ -67,8 +98,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     .expect("failed to write data to socket");
             }
         });
-        let a = midone.clone();
-        print!("{}", a.subject_name);
+        // let a = midone.clone();
+        // print!("{}", a.subject_name);
     }
 }
 // async fn main() {

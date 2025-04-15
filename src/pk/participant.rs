@@ -1,6 +1,7 @@
 use core::fmt;
 use uuid::Uuid;
 
+#[derive(Copy, Clone)]
 pub enum SubjectType {
     EVENT, REQUEST
 }
@@ -13,9 +14,10 @@ impl fmt::Display for SubjectType {
     }
 }
 
-pub struct Participant {
+#[derive(Copy, Clone)]
+pub struct Participant<'sex> {
     pub client_id: Uuid,
-    pub instance_name: String,
-    pub subject_name: String,
+    pub instance_name: &'sex String,
+    pub subject_name: &'sex String,
     pub subject_type: SubjectType
 }
