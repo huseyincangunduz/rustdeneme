@@ -62,22 +62,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
         tokio::spawn(async move {
             let tx = tx.clone();
-            tx.send("31 çek").unwrap();
+            tx.send(31).unwrap();
 
-            // let mut vecx = shared.lock().unwrap();
-
-            // let mut midone: Participant;
             let mut buf = vec![0; 1024];
-            // midone = String::from("Midone sinane nanana");
-            // midone = participant::Participant {
-            //     client_id: Uuid::new_v4(),
-            //     instance_name: &String::from("Instance"),
-            //     subject_name: &String::from("Subject name"),
-            //     subject_type: SubjectType::EVENT,
-            // };
-            // print!("Spawn içinde: {}", midone.subject_name);
-
-            // In a loop, read data from the socket and write the data back.
+           
             loop {
                 let n = socket
                     .read(&mut buf)
