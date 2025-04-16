@@ -16,56 +16,28 @@ use uuid::Uuid;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    // let mut p_list: Vec<participant::Participant> = Vec::new();
-    // p_list.push(participant::Participant {
-    //     client_id: Uuid::new_v4(),
-    //     instance_name: instanceName,
-    //     subject_name: subjectName,
-    //     subject_type: SubjectType::EVENT,
-    // });
-    // p_list.push(participant::Participant {
-    //     client_id: Uuid::new_v4(),
-    //     instance_name: String::from("Tetakent UBS Users"),
-    //     subject_name: String::from("GetUser"),
-    //     subject_type: SubjectType::REQUEST,
-    // });
-    // for ele in p_list {
-    //     println!(
-    //         "ENGINE5: \"{}\" {} from \"{}\" has been registered, {}",
-    //         ele.subject_name, ele.subject_type, ele.instance_name, ele.client_id
-    //     )
-    // }
 
-    // Allow passing an address to listen on as the first argument of this
-    // program, but otherwise we'll just set up our TCP listener on
-    // 127.0.0.1:8080 for connections.
     let addr = "127.0.0.1:13131";
 
-    // Next up we create a TCP listener which will listen for incoming
-    // connections. This TCP listener is bound to the address we determined
-    // above and must be associated with an event loop.
     let listener = TcpListener::bind(&addr).await?;
     println!("Listening on: {}", addr);
 
     loop {
         // Asynchronously wait for an inbound socket.
-        let (tx, rx) = mpsc::channel();
+        let (tx, rx) = mpsc::channel::<participant::Participant>();
         let (mut socket, _) = listener.accept().await?;
 
-        // And this is where much of the magic of this server happens. We
-        // crucially want all clients to make progress concurrently, rather than
-        // blocking one on completion of another. To achieve this we use the
-        // `tokio::spawn` function to execute the work in the background.
-        //
-        // Essentially here we're executing a new task to run concurrently,
-        // which will allow all of our clients to be processed concurrently.
-
         tokio::spawn(async move {
-            let tx = tx.clone();
-            tx.send(31).unwrap();
+            // let tx = tx.clone();
 
             let mut buf = vec![0; 1024];
-           
+            tx.send(participant::Participant {
+                client_id: Uuid::new_v4(),
+                instance_name: String::from("31 çek"),
+                subject_name: String::from("Subject name"),
+                subject_type: SubjectType::EVENT,
+            })
+            .unwrap();
             loop {
                 let n = socket
                     .read(&mut buf)
@@ -84,7 +56,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
         });
         // let a = midone.clone();
         // print!("{}", a.subject_name);
-        print!("msg {}", rx.recv().unwrap());
+        let a = rx.recv().unwrap().subject_name.to_string();
+        print!("{}",a);
     }
 }
 // async fn main() {
