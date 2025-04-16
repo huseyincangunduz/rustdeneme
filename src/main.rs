@@ -9,7 +9,7 @@ use std::error::Error;
 
 use std::f32::consts::E;
 use std::io::{self, Read, Write};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, mpsc};
 
 use participant::*;
 use uuid::Uuid;
@@ -46,9 +46,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
     // above and must be associated with an event loop.
     let listener = TcpListener::bind(&addr).await?;
     println!("Listening on: {}", addr);
-    let mut shared: Arc<Mutex<Vec<participant::Participant>>> = Arc::new(Mutex::new(Vec::new()));
+
     loop {
         // Asynchronously wait for an inbound socket.
+        let (tx, rx) = mpsc::channel();
         let (mut socket, _) = listener.accept().await?;
 
         // And this is where much of the magic of this server happens. We
@@ -60,16 +61,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
         // which will allow all of our clients to be processed concurrently.
 
         tokio::spawn(async move {
-            let a = & String::from("User Created");
+            let tx = tx.clone();
+            tx.send("31 çek").unwrap();
 
-            shared.get_mut().unwrap().push(
-                participant::Participant {
-                    client_id: Uuid::new_v4(),
-                    instance_name: & String::from("Tetakent UBS Users"),
-                    subject_name: a,
-                    subject_type: SubjectType::EVENT,
-                }
-            );
+            // let mut vecx = shared.lock().unwrap();
+
             // let mut midone: Participant;
             let mut buf = vec![0; 1024];
             // midone = String::from("Midone sinane nanana");
@@ -100,6 +96,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         });
         // let a = midone.clone();
         // print!("{}", a.subject_name);
+        print!("msg {}", rx.recv().unwrap());
     }
 }
 // async fn main() {
