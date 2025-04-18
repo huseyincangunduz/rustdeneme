@@ -4,50 +4,61 @@ pub mod participant;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpListener;
 
+use std::env;
 use std::error::Error;
-use std::thread::sleep;
-use std::time::Duration;
-use std::{env, thread};
 
-use std::sync::mpsc;
+use std::f32::consts::E;
+use std::io::{self, Read, Write};
+use std::sync::{Arc, Mutex, mpsc};
 
 use participant::*;
 use uuid::Uuid;
 
-fn main() {
-    let (tx, rx) = mpsc::channel::<String>();
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn Error>> {
 
-    let thread1 = thread::spawn(move || {
-        let mut text = String::from("Kyle Broflovski has always been considered one of the most intelligent children in South Park, and whenever crazy things are happening in South Park, Kyle and his super best friend, Stan, are there to provide the voice of reason and help resolve problems, often with a comforting 'gay little speech', something that has become Kyle's trademark amongst his friends... for better or for worse. He has a loving if stern father named Gerald, a local lawyer, and a mother, Sheila, known for her interest in social justice and politics, and of course, there's nobody Kyle cares more about than his little brother, Ike Broflovski -- despite the latter's adoption and the occasional game of 'kick the baby', they care about each other and Kyle will do anything to protect him, even go up against evil Visitors. All members of the Broflovski family are known for their strong moral centers and standing up for what they believe in... though not necessarily always to success. Nonetheless, even when times seem their darkest, Kyle will never back down from what he believes in.");
+    let addr = "127.0.0.1:13131";
 
-        loop {
-            let mut a: String = text.chars().skip(1).collect();
-            let mut afirst: String = text.chars().take(1).collect();
-            let bx = (a + &afirst);
-            let b = bx.as_str();
-            tx.send(b.chars().take(100).collect());
-            sleep(Duration::from_millis(100));
-            if (b.len() > 0) {
-                text = String::from(b);
-            } else {
-                return;
+    let listener = TcpListener::bind(&addr).await?;
+    println!("Listening on: {}", addr);
+
+    loop {
+        // Asynchronously wait for an inbound socket.
+        let (tx, rx) = mpsc::channel::<participant::Participant>();
+        let (mut socket, _) = listener.accept().await?;
+
+        tokio::spawn(async move {
+            // let tx = tx.clone();
+
+            let mut buf = vec![0; 1024];
+            tx.send(participant::Participant {
+                client_id: Uuid::new_v4(),
+                instance_name: String::from("31 çek"),
+                subject_name: String::from("Subject name"),
+                subject_type: SubjectType::EVENT,
+            })
+            .unwrap();
+            loop {
+                let n = socket
+                    .read(&mut buf)
+                    .await
+                    .expect("failed to read data from socket");
+
+                if n == 0 {
+                    return;
+                }
+
+                socket
+                    .write_all(&buf[0..n])
+                    .await
+                    .expect("failed to write data to socket");
             }
-        }
-    });
-
-    let thread2 = thread::spawn(move || {
-        loop {
-            for a in rx.iter() {
-                print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
-                println!("{}", a)
-            }
-        }
-    });
-    thread2.join();
-    // let addr = "127.0.0.1:13131";
-
-    // let listener = TcpListener::bind(&addr).await?;
-    // println!("Listening on: {}", addr);
+        });
+        // let a = midone.clone();
+        // print!("{}", a.subject_name);
+        let a = rx.recv().unwrap().subject_name.to_string();
+        print!("{}",a);
+    }
 }
 // async fn main() {
 
