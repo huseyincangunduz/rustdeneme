@@ -18,7 +18,7 @@ fn main() {
     let (tx, rx) = mpsc::channel::<String>();
 
     let thread1 = thread::spawn(move || {
-        let mut text = String::from("Gelecek istasyon: Yenikapı - Next station: Yenikapı       Yenikapı bu hattın son istasyonudur. Marmaray ve M1 Yenikapı - Atatürk Havalimanı/Kirazlı hattına aktarma yapmak isteyen yolcuların bu istasyonda aktarma yapmaları gerekmektedir.      Yenikapı is the terminal station of this line. Passengers who want to transfer to Marmaray and M1 Yenikapı - Atatürk Airport/Kirazlı line, should change at this station.");
+        let mut text = String::from("Kyle Broflovski has always been considered one of the most intelligent children in South Park, and whenever crazy things are happening in South Park, Kyle and his super best friend, Stan, are there to provide the voice of reason and help resolve problems, often with a comforting 'gay little speech', something that has become Kyle's trademark amongst his friends... for better or for worse. He has a loving if stern father named Gerald, a local lawyer, and a mother, Sheila, known for her interest in social justice and politics, and of course, there's nobody Kyle cares more about than his little brother, Ike Broflovski -- despite the latter's adoption and the occasional game of 'kick the baby', they care about each other and Kyle will do anything to protect him, even go up against evil Visitors. All members of the Broflovski family are known for their strong moral centers and standing up for what they believe in... though not necessarily always to success. Nonetheless, even when times seem their darkest, Kyle will never back down from what he believes in.");
 
         loop {
             let mut a: String = text.chars().skip(1).collect();
